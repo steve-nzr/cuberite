@@ -2561,7 +2561,7 @@ static int tolua_cMojangAPI_AddPlayerNameToUUIDMapping(lua_State * L)
 	S.GetStackValues(2, PlayerName, UUID);
 
 	// Store in the cache:
-	cRoot::Get()->GetMojangAPI().AddPlayerNameToUUIDMapping(PlayerName, UUID);
+	cRoot::Get()->GetMojangAPI()->AddPlayerNameToUUIDMapping(PlayerName, UUID);
 	return 0;
 }
 
@@ -2593,7 +2593,7 @@ static int tolua_cMojangAPI_GetPlayerNameFromUUID(lua_State * L)
 	}
 
 	// Return the PlayerName:
-	AString PlayerName = cRoot::Get()->GetMojangAPI().GetPlayerNameFromUUID(UUID, ShouldUseCacheOnly);
+	AString PlayerName = cRoot::Get()->GetMojangAPI()->GetPlayerNameFromUUID(UUID, ShouldUseCacheOnly);
 	S.Push(PlayerName);
 	return 1;
 }
@@ -2626,7 +2626,7 @@ static int tolua_cMojangAPI_GetUUIDFromPlayerName(lua_State * L)
 	}
 
 	// Return the UUID as a string:
-	cUUID UUID = cRoot::Get()->GetMojangAPI().GetUUIDFromPlayerName(PlayerName, ShouldUseCacheOnly);
+	cUUID UUID = cRoot::Get()->GetMojangAPI()->GetUUIDFromPlayerName(PlayerName, ShouldUseCacheOnly);
 	S.Push(UUID.IsNil() ? AString{} : UUID.ToShortString());
 	return 1;
 }
@@ -2675,7 +2675,7 @@ static int tolua_cMojangAPI_GetUUIDsFromPlayerNames(lua_State * L)
 	lua_newtable(L);
 
 	// Get the UUIDs:
-	auto UUIDs = cRoot::Get()->GetMojangAPI().GetUUIDsFromPlayerNames(PlayerNames, ShouldUseCacheOnly);
+	auto UUIDs = cRoot::Get()->GetMojangAPI()->GetUUIDsFromPlayerNames(PlayerNames, ShouldUseCacheOnly);
 	if (UUIDs.size() != PlayerNames.size())
 	{
 		// A hard error has occured while processing the request, no UUIDs were returned. Return an empty table:

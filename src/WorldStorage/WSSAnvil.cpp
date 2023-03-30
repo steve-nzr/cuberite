@@ -3597,7 +3597,7 @@ std::pair<AString, cUUID> cWSSAnvil::LoadEntityOwner(const cParsedNBT & a_NBT, i
 	{
 		// This entity has only playername stored (pre-1.7.6), look up the UUID
 		// The lookup is blocking, but we're running in a separate thread, so it's ok
-		OwnerUUID = cRoot::Get()->GetMojangAPI().GetUUIDFromPlayerName(OwnerName);
+		OwnerUUID = cRoot::Get()->GetMojangAPI()->GetUUIDFromPlayerName(OwnerName);
 		if (OwnerUUID.IsNil())
 		{
 			// Not a known player, un-tame the entity by bailing out
@@ -3609,7 +3609,7 @@ std::pair<AString, cUUID> cWSSAnvil::LoadEntityOwner(const cParsedNBT & a_NBT, i
 	if (OwnerName.empty())
 	{
 		// The lookup is blocking, but we're running in a separate thread, so it's ok
-		OwnerName = cRoot::Get()->GetMojangAPI().GetPlayerNameFromUUID(OwnerUUID);
+		OwnerName = cRoot::Get()->GetMojangAPI()->GetPlayerNameFromUUID(OwnerUUID);
 		if (OwnerName.empty())
 		{
 			// Not a known player, un-tame the entity by bailing out

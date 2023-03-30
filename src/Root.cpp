@@ -80,8 +80,7 @@ cRoot::cRoot(void) :
 	m_FurnaceRecipe(nullptr),
 	m_BrewingRecipes(nullptr),
 	m_WebAdmin(nullptr),
-	m_PluginManager(nullptr),
-	m_MojangAPI(nullptr)
+	m_PluginManager(nullptr)
 {
 	s_Root = this;
 	TransitionNextState(NextState::Run);
@@ -156,7 +155,7 @@ bool cRoot::Run(cSettingsRepositoryInterface & a_OverridesRepo)
 	// cClientHandle::FASTBREAK_PERCENTAGE = settingsRepo->GetValueSetI("AntiCheat", "FastBreakPercentage", 97) / 100.0f;
 	cClientHandle::FASTBREAK_PERCENTAGE = 0;  // AntiCheat disabled due to bugs. We will enabled it once they are fixed. See #3506.
 
-	m_MojangAPI = new cMojangAPI;
+	m_MojangAPI = std::make_unique<cMojangAPI>();
 	bool ShouldAuthenticate = settingsRepo->GetValueSetB("Authentication", "Authenticate", true);
 	m_MojangAPI->Start(*settingsRepo, ShouldAuthenticate);  // Mojang API needs to be started before plugins, so that plugins may use it for DB upgrades on server init
 	if (!m_Server->InitServer(*settingsRepo, ShouldAuthenticate))
@@ -169,10 +168,10 @@ bool cRoot::Run(cSettingsRepositoryInterface & a_OverridesRepo)
 	m_WebAdmin->Init();
 
 	LOGD("Loading settings...");
-	m_RankManager.reset(new cRankManager());
+	m_RankManager = std::make_unique<cRankManager>();
 	m_RankManager->Initialize(*m_MojangAPI);
 	m_CraftingRecipes = new cCraftingRecipes();
-	m_RecipeMapper.reset(new cRecipeMapper());
+	m_RecipeMapper = std::make_unique<cRecipeMapper>();
 	m_FurnaceRecipe   = new cFurnaceRecipe();
 	m_BrewingRecipes.reset(new cBrewingRecipes());
 
@@ -220,8 +219,6 @@ bool cRoot::Run(cSettingsRepositoryInterface & a_OverridesRepo)
 		LOG("Shutting down server...");
 		m_Server->Shutdown();
 	}  // if (m_Server->Start()
-
-	delete m_MojangAPI; m_MojangAPI = nullptr;
 
 	LOGD("Shutting down deadlock detector...");
 	dd.Stop();
